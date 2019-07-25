@@ -32,7 +32,8 @@
     
     self.Singleton.uniqueIdentifier = UUID;
     self.Singleton.typeDevice = @"1";
-    NSLog(@"UUID: %@",UUID);
+    self.Singleton.Device = [NSString stringWithFormat:@"%@, %@",myDevice.name,myDevice.model];
+    //NSLog(@"UUID: %@",UUID);
     
     myDevice = nil;
     UUID = nil;
@@ -108,7 +109,7 @@
     }
 }
 
-
+/*
 #pragma mark state preservation / restoration
 
 - (BOOL)application:(UIApplication *)application shouldSaveApplicationState:(NSCoder *)coder
@@ -128,7 +129,7 @@
 }
 
 
-
+*/
 
 
 @end

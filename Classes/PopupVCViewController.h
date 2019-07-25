@@ -23,7 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, weak) id <PopupVCDelegate> delegate;
 @property (nonatomic) int Key;
-@property(nonatomic, retain) NSString    *Value;
+@property(nonatomic, retain) NSString *Value;
+@property(nonatomic, retain) NSString *Titulo;
 @property (nonatomic) int IdTarget;
 
 @property (nonatomic, strong) NSMutableArray *opciones;
@@ -32,6 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (weak, nonatomic) IBOutlet UIView *PopupVC;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+
+@property (weak, nonatomic) IBOutlet UILabel *lblTitle;
 
 @property (weak, nonatomic) IBOutlet UIButton *btnCloseVC;
 - (IBAction)btnCloseVC:(id)sender;

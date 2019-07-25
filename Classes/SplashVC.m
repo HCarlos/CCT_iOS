@@ -13,20 +13,32 @@
 @end
 
 @implementation SplashVC
+@synthesize textView, viewSplash;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    self.textView.contentInset = UIEdgeInsetsMake(-7.0,0.0,0,0.0);
+    [self AnimateSplash];
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+-(void)AnimateSplash{
+    self.viewSplash.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.001, 0.001);
+    [self.view addSubview:self.viewSplash];
+    [UIView animateWithDuration:0.3/2 animations:^{
+        self.viewSplash.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.1, 1.1);
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.3/2 animations:^{
+            self.viewSplash.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.9, 0.9);
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:0.3/2 animations:^{
+                self.viewSplash.transform = CGAffineTransformIdentity;
+            }];
+        }];
+    }];
 }
-*/
 
+
+- (IBAction)btnCerrarVentana:(id)sender {
+    [self.delegate cerrarVentana];
+}
 @end

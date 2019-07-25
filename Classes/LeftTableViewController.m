@@ -10,7 +10,7 @@
 #import "RightViewController.h"
 #import "Opciones.h"
 #import "SWRevealViewController.h"
-#import "MisDenunciasTableViewController.h"
+#import "MisDenunciasTVC.h"
 #import "AvisoPrivacidadViewController.h"
 #import "AcercadeViewController.h"
 #import "Singleton.h"
@@ -40,12 +40,20 @@
     [super viewDidLoad];
 
     self.Singleton  = [Singleton sharedMySingleton];
-    [self.Singleton setPlist];
+//    [self.Singleton setPlist];
     
 
     self.clearsSelectionOnViewWillAppear = NO;
     self.tableView.backgroundColor = [UIColor colorWithWhite:0.3 alpha:1.0];
     self.tableView.separatorColor = [UIColor colorWithWhite:0.5 alpha:1.0];
+    
+    UIGraphicsBeginImageContext(self.view.frame.size);
+    [[UIImage imageNamed:@"background.png"] drawInRect:self.view.bounds];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    self.view.backgroundColor = [UIColor colorWithPatternImage:image];
+
     
     /*
     self.aboutVC = [self.storyboard instantiateViewControllerWithIdentifier:@"aboutVC"]; // make sure you give the controller this same identifier in the storyboard
@@ -94,6 +102,9 @@
         case 3:
             txtCel = @"Acercade";
             break;
+        case 4:
+            txtCel = @"SinUso";
+            break;
 
     }
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:txtCel forIndexPath:indexPath];
@@ -115,6 +126,7 @@
         [opciones addObject:[Opciones newDataObject:1 value:@"Mis denuncias"]];
         [opciones addObject:[Opciones newDataObject:2 value:@"Aviso de Privacidad"]];
         [opciones addObject:[Opciones newDataObject:3 value:@"Acerca DE"]];
+        [opciones addObject:[Opciones newDataObject:4 value:@"Sin Uso"]];
     }
     
     return self;
@@ -174,7 +186,7 @@
         }
         case 1:
         {
-            MisDenunciasTableViewController *misDenunciasController = [[MisDenunciasTableViewController alloc] init];
+            MisDenunciasTVC *misDenunciasController = [[MisDenunciasTVC alloc] init];
             frontController = misDenunciasController;
             break;
         }

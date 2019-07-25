@@ -9,20 +9,20 @@
 #import "PopupVCViewController.h"
 #import "Opciones.h"
 #import "Singleton.h"
-#import "DenunciaPersonalTableViewController.h"
+#import "DenunciaTVC.h"
 @interface PopupVCViewController ()
 @end
 
 @implementation PopupVCViewController{
     NSMutableArray *Combo;
 }
-@synthesize tableView, btnCloseVC, PopupVC, opciones, IdTarget;
+@synthesize tableView, Titulo, btnCloseVC, PopupVC, opciones, IdTarget, lblTitle;
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
     self.Singleton  = [Singleton sharedMySingleton];
-    [self.Singleton setPlist];
+//    [self.Singleton setPlist];
     
     [self.Indicator setHidden:YES];
     [self.Indicator hidesWhenStopped];
@@ -43,9 +43,16 @@
             [self getTipoGobierno];
             break;
         case 1:
-            [self getDataOptions:self.Singleton.urlDependencias];
+            [self getDataOptions:self.Singleton.urlMunicipios];
+            break;
+        case 2:
+            [self getDataOptions:[self.Singleton getUrlDependencias]];
+            break;
+        case 3:
+            [self getDataOptions:[self.Singleton getUrlAreas]];
             break;
     };
+    lblTitle.text = self.Titulo;
 }
 
 - (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
@@ -80,8 +87,8 @@
 #pragma Métodos GET y SET de Datos
 -(void)getTipoGobierno{
     opciones = [NSMutableArray array];
-    [opciones addObject:[Opciones newDataObject:0 value:@"GOBIERNO DEL ESTADO DE TABASCO"]];
-    [opciones addObject:[Opciones newDataObject:1 value:@"MUNICIPIOS DE TABASCO"]];
+    [opciones addObject:[Opciones newDataObject:1 value:@"GOBIERNO DEL ESTADO DE TABASCO"]];
+    [opciones addObject:[Opciones newDataObject:2 value:@"MUNICIPIOS DE TABASCO"]];
 }
 
 -(void)setDataReturn{
@@ -109,6 +116,8 @@
             NSDictionary *responseBody = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
             if(!jsonError)
             {
+                NSLog(@"Respode %@",responseBody);
+
                 self->opciones = [NSMutableArray array];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self->Combo = (NSMutableArray *)responseBody;
@@ -126,14 +135,12 @@
                 });
 
             }else{
-                NSLog(@"Error: 101");
+                NSLog(@"Error for @DevCH: 101");
             }
             
         }
     }];
     [task resume];
-    
-
 }
 
 #pragma Llamada de botones

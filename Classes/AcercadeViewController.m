@@ -8,13 +8,16 @@
 
 #import "AcercadeViewController.h"
 #import "SWRevealViewController.h"
+#import <WebKit/WebKit.h>
+#import "Singleton.h"
+
 
 @interface AcercadeViewController ()
 
 @end
 
 @implementation AcercadeViewController
-@synthesize barButtom;
+@synthesize barButtom, Singleton;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -30,6 +33,19 @@
         [self.barButtom setAction: @selector( revealToggle: )];
         [self.navigationController.navigationBar addGestureRecognizer: self.revealViewController.panGestureRecognizer];
     }
+    
+    self.Singleton  = [Singleton sharedMySingleton];
+//    [self.Singleton setPlist];
+    
+    
+    WKWebViewConfiguration *theConfiguration = [[WKWebViewConfiguration alloc] init];
+    WKWebView *webView = [[WKWebView alloc] initWithFrame:self.view.frame configuration:theConfiguration];
+    webView.navigationDelegate = self;
+    NSURL *nsurl=[NSURL URLWithString:self.Singleton.urlAcercaDe];
+    NSURLRequest *nsrequest=[NSURLRequest requestWithURL:nsurl];
+    [webView loadRequest:nsrequest];
+    [self.view addSubview:webView];
+    
 }
 
 #pragma mark state preservation / restoration

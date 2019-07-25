@@ -13,14 +13,18 @@
 
 @implementation Singleton
 
-@synthesize uniqueIdentifier;
-@synthesize pathPList, dataPList, IsDelete, noIngresos, IdConcepto;
-@synthesize NombreCompletoUsuario, Valor;
+@synthesize uniqueIdentifier, UIDD, Device, Latitud, Longitud, Altitud;
+@synthesize pathPList, dataPList, IsDelete, dataOpciones, pathOpciones;
+@synthesize NombreCompletoUsuario, Valor, noIngresos;
 @synthesize tokenUser, typeDevice, Version, currentVersion, FCMToken, APNSToken, IdTarget;
-@synthesize applicationIconBadgeNumber;
-@synthesize urlBase, urlLogin, urlPagos, urlDependencias, urlAvisoPrivacidad;
+@synthesize applicationIconBadgeNumber, IsInit;
+@synthesize urlBase, urlLogin, urlPagos, urlMunicipios, urlDependencias, urlAvisoPrivacidad, urlAcercaDe, urlVideo;
+@synthesize IdDenuncia, IdTipoDenuncia, IdTipoGobierno, IdMunicipio, IdDependencia, IdArea, urlGuardarDenuncia;
+@synthesize Apellido_Paterno, Apellido_Materno, Nombre, Correo_Electronico, Celular, Fecha, Hora, Lugar_Denuncia,
+Denuncia, urlMisDenuncias, urlMiDenuncia, urlArea, urlArchivosDenuncia, urlAgregarArchivo, IdArchivo, urlQuitarArchivo, Archivo, urlMediaData, urlArchivo;
 
-@synthesize IdTipoGobierno, IdDependencia, IdArea;
+
+
 
 static Singleton* _sharedMySingleton = nil;
 //extern NSString* CTSettingCopyMyPhoneNumber();
@@ -55,6 +59,8 @@ static Singleton* _sharedMySingleton = nil;
 -(id)init {
 	self = [super init];
 	if (self != nil) {
+        
+        
 		
         NSString * version = nil;
         version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
@@ -63,23 +69,59 @@ static Singleton* _sharedMySingleton = nil;
         }
         
         self.IdTarget = 0;
-
-        self.IdTipoGobierno = 0;
+        self.IdArchivo = 0;
+        self.IdDenuncia = 0;
+        self.IdTipoDenuncia = 0; // 0 = Normal, 1 = Anónima
+        self.IdTipoGobierno = 0; // 0 = Gobierno Estatal, 1 = Gobierno Municipal
+        self.IdMunicipio = 0;
         self.IdDependencia = 0;
         self.IdArea = 0;
-        
+        self.Archivo = @"";
+        self.Apellido_Paterno = @"";
+        self.Apellido_Materno = @"";
+        self.Nombre = @"";
+        self.Correo_Electronico = @"";
+        self.Celular = @"";
+        self.Fecha = @"";
+        self.Hora = @"";
+        self.Lugar_Denuncia = @"";
+        self.Denuncia = @"";
+        self.UIDD = @"";
+        self.Device = @"";
+        self.Latitud = @"";
+        self.Longitud = @"";
+        self.Altitud = @"";
+        self.IsInit = YES;
+
         self.Version = version;
         self.currentVersion = version;
-        self.IdConcepto = 0;
+        self.noIngresos = 0;
         self.Valor = @"none";
         self.urlBase = @"https://uipeapp01.uipe.tabascoweb.com/";
         self.urlLogin = [NSString stringWithFormat:@"%@%@", self.urlBase, @"getLoginUserMobile/"];
         self.urlPagos = [NSString stringWithFormat:@"%@%@", self.urlBase, @"php/01/mobile/pagos_layout.php?idedocta=%d&user=%@&iduser=%d@&idconcepto=%ld"];
-        self.urlAvisoPrivacidad = [NSString stringWithFormat:@"%@%@", self.urlBase, @"getAvisoPrivacidad/"];
-
-        self.urlDependencias = [NSString stringWithFormat:@"%@%@", self.urlBase, @"getDependencias/"];
-
+        self.urlAvisoPrivacidad = [NSString stringWithFormat:@"%@%@", self.urlBase, @"avisodeprivacidad/"];
+        self.urlAcercaDe = [NSString stringWithFormat:@"%@%@", self.urlBase, @"acercade/"];
+        self.urlVideo = [NSURL URLWithString:@""];
+        self.urlArchivo = [NSURL URLWithString:@""];
         
+
+        self.urlMediaData = [NSString stringWithFormat:@"%@up_control_images/", self.urlBase];
+
+        self.urlMunicipios = [NSString stringWithFormat:@"%@%@", self.urlBase, @"getMunicipios/1/"];
+        
+        self.urlGuardarDenuncia = [NSString stringWithFormat:@"%@%@", self.urlBase, @"setDenuncia/"];
+
+        self.urlAgregarArchivo = [NSString stringWithFormat:@"%@%@", self.urlBase, @"setAddArchivo/"];
+        self.urlQuitarArchivo = [NSString stringWithFormat:@"%@%@", self.urlBase, @"setRemoveArchivo/"];
+
+        self.urlMisDenuncias = [NSString stringWithFormat:@"%@%@%@/", self.urlBase, @"getMiDenuncia/",self.uniqueIdentifier];
+
+        self.urlMiDenuncia = [NSString stringWithFormat:@"%@%@%d/", self.urlBase, @"getDenuncia/",self.IdDenuncia];
+
+        self.urlArchivosDenuncia = [NSString stringWithFormat:@"%@%@%d/", self.urlBase, @"getDenunciaArchivos/",self.IdDenuncia];
+
+
 	}
 	
 	return self;
@@ -145,38 +187,27 @@ static Singleton* _sharedMySingleton = nil;
 }
 
 -(void)setPlist{
-    
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    pathPList = [documentsDirectory stringByAppendingPathComponent:@"UserConnect.plist"];
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    
-    if (![fileManager fileExistsAtPath: pathPList])
-    {
-        pathPList = [documentsDirectory stringByAppendingPathComponent: [NSString stringWithFormat: @"UserConnect.plist"] ];
-    }else{
+    if ([paths count] > 0){
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        self.pathOpciones = [documentsDirectory stringByAppendingPathComponent:@"Opciones.plist"];
+        BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:self.pathOpciones];
+        if (fileExists){
+            NSLog(@"Fichero encontrado en directorio de documentos OK: %@!",self.pathOpciones);
+            self.dataOpciones = [[NSMutableDictionary alloc] initWithContentsOfFile:self.pathOpciones];
+        } else {
+                NSLog(@"No se encuentra el fichero configUsuario.plist en el directorio de documentos->Lo creamos.");
+              NSString *mainBundlePath = [[NSBundle mainBundle] bundlePath];
+              self.pathOpciones = [mainBundlePath stringByAppendingPathComponent:@"Opciones.plist"];
+              self.dataOpciones = [[NSMutableDictionary alloc] initWithContentsOfFile:self.pathOpciones];
+              [self.dataOpciones writeToFile:self.pathOpciones atomically:YES];
+              NSLog(@"plist de configUsuario creado!");
+        }
     }
-    
-    fileManager = [NSFileManager defaultManager];
-    
-    if ([fileManager fileExistsAtPath: pathPList])
-    {
-        dataPList = [[NSMutableDictionary alloc] initWithContentsOfFile: pathPList];
-    }
-    else
-    {
-        dataPList = [[NSMutableDictionary alloc] init];
-        [dataPList writeToFile: pathPList atomically:YES];
-
-    }
-
-    BOOL key2Exists = !![dataPList objectForKey:@"badge"];
-    
-    if (!key2Exists){
-        [self incrementBadge];
-    }
-    
 }
+
+
+
 
 -(void)insertUser:(NSString *) User insertPass:(NSString *) PWD{
     ///// INSERTAR ////////
@@ -201,6 +232,8 @@ static Singleton* _sharedMySingleton = nil;
     [dataPList writeToFile:pathPList atomically:YES];
     
 }
+
+
 
 -(NSString *) getUser{
     
@@ -288,6 +321,13 @@ static Singleton* _sharedMySingleton = nil;
     return [emailTest evaluateWithObject:candidate];
 }
 
+- (BOOL) validatePhone: (NSString *) candidate {
+    NSString *phoneRegex = @"^+(?:[0-9] ?){6,14}[0-9]$";
+    NSPredicate *phoneTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", phoneRegex];
+    
+    return [phoneTest evaluateWithObject:candidate];
+}
+
 -(NSArray*)explodeString:(NSString*)stringToBeExploded WithDelimiter:(NSString*)delimiter
 {
     return [stringToBeExploded componentsSeparatedByString: delimiter];
@@ -314,11 +354,80 @@ static Singleton* _sharedMySingleton = nil;
     return (double)rand()/RAND_MAX * (max - min) + min;
 }
 
+
+-(void)insertOpciones:(NSMutableArray *) opciones{
+    //NSMutableDictionary *dataOp = [[NSMutableDictionary alloc] initWithContentsOfFile: pathOpciones];
+    int i = 0;
+    for (Opciones *optc in opciones) {
+        Opciones *opt =  optc;
+        NSString *strKey = [NSString stringWithFormat:@"%d",i];
+//        NSLog(@"Insertanto : %@",opt.Value);
+        [self.dataOpciones setObject:[Opciones newDataObjectMedia:opt.Key value:opt.Value VString1:opt.VString1 Imagen:opt.Imagen Data:opt.Data ] forKey:strKey];
+        i++;
+    }
+    [self.dataOpciones writeToFile: self.pathOpciones atomically:YES];
+
+}
+
+-(void)deleteOpciones:(NSString *) key{
+    [self.dataOpciones removeObjectForKey:key];
+    [self.dataOpciones writeToFile:self.pathOpciones atomically:YES];
+}
+
+-(void)clearAllOpciones{
+    [[NSFileManager defaultManager] removeItemAtPath:self.pathOpciones error:NULL];
+}
+
+-(NSMutableArray *) getOpciones{
+    //NSMutableDictionary *savedStock = [[NSMutableDictionary alloc] initWithContentsOfFile: self.pathOpciones];
+    NSMutableArray *array = [NSMutableArray array];
+    
+    for(int i=0; i < [self.dataOpciones count]; i++){
+         NSString *strKey = [NSString stringWithFormat:@"%d",i];
+        Opciones *opt = (Opciones *) [self.dataOpciones objectForKey:strKey];
+//        NSLog(@"NSMUTABLE ARRAY IN SINGLETON Value : %@",opt.Value);
+        [array addObject:[Opciones newDataObjectMedia:opt.Key value:opt.Value VString1:opt.VString1 Imagen:opt.Imagen Data:opt.Data ]];
+    }
+    
+//    NSLog(@"NSMUTABLE ARRAY IN SINGLETON : %@",array);
+    return array;
+    
+}
+
 -(void)setTarget:(int)oIdTarget{
     self.IdTarget = oIdTarget;
 }
+
 -(int)getIdTarget{
     return self.IdTarget;
+}
+
+-(NSString *) getUrlDependencias{
+    return self.urlDependencias = [NSString stringWithFormat:@"%@%@%d/", self.urlBase, @"getDependencias/",self.IdTipoGobierno];
+}
+
+-(NSString *) getUrlAreas{
+    return self.urlArea = [NSString stringWithFormat:@"%@%@%d/", self.urlBase, @"getAreas/",self.IdDependencia];
+}
+
+-(void)setTipoDenuncia:(int)idtipodenuncia{
+    self.IdTipoDenuncia = idtipodenuncia;
+}
+
+-(int)getIdTipoDenuncia{
+    return self.IdTipoDenuncia;
+}
+
+-(NSString *) getUrlMisDenuncias{
+    self.UIDD = self.uniqueIdentifier;
+    return self.urlMisDenuncias = [NSString stringWithFormat:@"%@%@%@/", self.urlBase, @"getMisDenuncias/",self.UIDD];
+}
+
+-(NSString *) getUrlMiDenuncia{
+    return self.urlMiDenuncia = [NSString stringWithFormat:@"%@%@%d/", self.urlBase, @"getDenuncia/",self.IdDenuncia];
+}
+-(NSString *) getUrlArchivosDenuncia{
+    return self.urlArchivosDenuncia = [NSString stringWithFormat:@"%@%@%d/", self.urlBase, @"getDenunciaArchivos/",self.IdDenuncia];
 }
 
 

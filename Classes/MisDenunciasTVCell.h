@@ -11,6 +11,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MisDenunciasTVCell : UITableViewCell
+@property (weak, nonatomic) IBOutlet UILabel *lblTitulo;
+@property (weak, nonatomic) IBOutlet UILabel *lblSubtitulo;
+@property (weak, nonatomic) IBOutlet UITextView *lblTitulo2;
 
 @end
 
