@@ -1,4 +1,4 @@
-git remote set-url origin https://github.com/HCarlos/iOS_Android
+git remote set-url origin https://github.com/HCarlos/CCT_iOS
 git config --global user.email "r0@tecnointel.mx"
 git config --global user.name "HCarlos"
 git config --global color.ui true
