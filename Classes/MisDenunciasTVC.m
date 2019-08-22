@@ -99,7 +99,7 @@
 
 - (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
     
-    NSString* txtCel = [[NSString alloc] init];
+    NSString* txtCel = @""; //[[NSString alloc] init];
     txtCel = @"CellMiDenuncia";
     MisDenunciasTVCell *cell = [tableView dequeueReusableCellWithIdentifier:txtCel forIndexPath:indexPath];
     if (isFiltered) {

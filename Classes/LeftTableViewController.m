@@ -66,10 +66,11 @@
     
 }
 
+/*
 - (void)viewWillAppear:(BOOL)animated
 {
 }
-
+*/
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
@@ -125,7 +126,7 @@
         [opciones addObject:[Opciones newDataObject:0 value:@"Denuncias"]];
         [opciones addObject:[Opciones newDataObject:1 value:@"Mis denuncias"]];
         [opciones addObject:[Opciones newDataObject:2 value:@"Aviso de Privacidad"]];
-        [opciones addObject:[Opciones newDataObject:3 value:@"Acerca DE"]];
+        [opciones addObject:[Opciones newDataObject:3 value:@"Acerca de"]];
         [opciones addObject:[Opciones newDataObject:4 value:@"Sin Uso"]];
     }
     
@@ -163,6 +164,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+
+/*
+ 
     SWRevealViewController *revealController = self.revealViewController;
     
     NSInteger row = indexPath.row;
@@ -203,7 +207,10 @@
             break;
         }
     }
-    
+ 
+ */
+ 
+ 
 /*
     if ( row != 2 )
     {
@@ -219,6 +226,8 @@
     
  //   [revealController setFrontViewController:frontController animated:YES];    //sf
 
+    
+    
 }
 
 

@@ -11,7 +11,7 @@ git status
 
 git add .
 
-git commit -m "UIPE - Update 1.2 Alfa"
+git commit -m "UIPE - Update 1.2b Alfa"
 
 git push -u origin master --force
 

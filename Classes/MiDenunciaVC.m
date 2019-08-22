@@ -55,7 +55,7 @@
 
 - (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
     
-    NSString* txtCel = [[NSString alloc] init];
+    NSString* txtCel = @""; //[[NSString alloc] init];
     txtCel = self->Celdas[indexPath.row];
     MisDenunciasTVCell *cell = [tableView dequeueReusableCellWithIdentifier:txtCel forIndexPath:indexPath];
     

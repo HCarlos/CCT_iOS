@@ -37,13 +37,21 @@
     self.Singleton  = [Singleton sharedMySingleton];
 //    [self.Singleton setPlist];
     
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+    [[NSURLCache sharedURLCache] setDiskCapacity:0];
+    [[NSURLCache sharedURLCache] setMemoryCapacity:0];
     
     WKWebViewConfiguration *theConfiguration = [[WKWebViewConfiguration alloc] init];
     WKWebView *webView = [[WKWebView alloc] initWithFrame:self.view.frame configuration:theConfiguration];
     webView.navigationDelegate = self;
-    NSURL *nsurl=[NSURL URLWithString:self.Singleton.urlAcercaDe];
-    NSURLRequest *nsrequest=[NSURLRequest requestWithURL:nsurl];
+    NSURL *nsurl = [NSURL URLWithString:self.Singleton.urlAcercaDe];
+
+    NSURLRequest *nsrequest = [NSURLRequest requestWithURL:nsurl
+                                                cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                            timeoutInterval: 10.0];
+    
     [webView loadRequest:nsrequest];
+    [webView reload];
     [self.view addSubview:webView];
     
 }

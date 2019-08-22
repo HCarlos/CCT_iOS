@@ -57,7 +57,7 @@
 
 - (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
     
-    NSString* txtCel = [[NSString alloc] init];
+    NSString* txtCel = @""; //[[NSString alloc] init];
     txtCel = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:txtCel forIndexPath:indexPath];
     
